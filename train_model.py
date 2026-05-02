@@ -1,6 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 import joblib
 
@@ -12,11 +11,20 @@ le = LabelEncoder()
 df["context"] = le.fit_transform(df["context"])
 
 # Features & target
-X = df[["cpu", "ram", "battery", "plugged", "context"]]
+X = df[[
+    "cpu", "ram", "battery", "plugged",
+    "processes", "net_sent", "net_recv",
+    "top_cpu", "context"
+]]
+
 y = df["drain"]
 
 # Train model
-model = LinearRegression()
+model = RandomForestRegressor(
+    n_estimators=100,
+    random_state=42
+)
+
 model.fit(X, y)
 
 # Save model + encoder
